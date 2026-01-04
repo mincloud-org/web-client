@@ -6,7 +6,7 @@ export const routes: Routes = [
         path: '',
         component: MainLayout,
         children: [
-            { path: 'settings', loadComponent: () => import('./features/settings/settings').then(m => m.Settings) },
+            { path: 'settings', loadChildren: () => import('./features/settings/settings.routes') },
             { path: '', redirectTo: 'settings', pathMatch: 'full' }
         ]
     },

@@ -6,14 +6,48 @@
         <mat-icon matListItemIcon>dashboard</mat-icon>
         <span matListItemTitle>Dashboard</span>
       </a>
+
       <a mat-list-item routerLink="/users" routerLinkActive="active-link">
-        <mat-icon matListItemIcon>people</mat-icon>
-        <span matListItemTitle>Users</span>
+        <mat-icon matListItemIcon>library_books</mat-icon>
+        <span matListItemTitle>Library</span>
       </a>
-      <a mat-list-item routerLink="/settings" routerLinkActive="active-link">
+      <a mat-list-item routerLink="/photos" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>photo_library</mat-icon>
+        <span matListItemTitle>Photos</span>
+      </a>
+      <a mat-list-item routerLink="/collections" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>collections_bookmark</mat-icon>
+        <span matListItemTitle>Collections</span>
+      </a>
+
+      <a mat-list-item routerLink="/vault" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>shield</mat-icon>
+        <span matListItemTitle>Vault</span>
+      </a>
+
+      <a mat-list-item (click)="toggleSettings()" class="menu-item">
         <mat-icon matListItemIcon>settings</mat-icon>
         <span matListItemTitle>Settings</span>
+        <span matListItemMeta>
+          @if (settingsExpanded()) {
+          <mat-icon matListItemIcon>expand_less</mat-icon>
+          } @else {
+          <mat-icon matListItemIcon>expand_more</mat-icon>
+          }
+        </span>
       </a>
+
+      @if (settingsExpanded()) {
+      <a mat-list-item routerLink="/settings/users" routerLinkActive="active-link" class="nested-item">
+        <span matListItemTitle>Users</span>
+      </a>
+      <a mat-list-item routerLink="/settings/storages" routerLinkActive="active-link" class="nested-item">
+        <span matListItemTitle>Storages</span>
+      </a>
+      <a mat-list-item routerLink="/settings/space" routerLinkActive="active-link" class="nested-item">
+        <span matListItemTitle>Spaces</span>
+      </a>
+      }
     </mat-nav-list>
   </mat-sidenav>
 

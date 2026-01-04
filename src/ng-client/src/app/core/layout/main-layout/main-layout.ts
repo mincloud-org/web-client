@@ -1,4 +1,4 @@
-import { Component, inject, viewChild } from '@angular/core';
+import { Component, inject, viewChild, signal } from '@angular/core';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
@@ -26,8 +26,13 @@ import { LayoutService } from '../../services/layout-service';
 export class MainLayout {
   layoutService = inject(LayoutService);
   sidenav = viewChild<MatSidenav>('sidenav');
+  readonly settingsExpanded = signal(false);
 
   toggleTheme() {
     this.layoutService.toggleTheme();
+  }
+
+  toggleSettings() {
+    this.settingsExpanded.update(v => !v);
   }
 }

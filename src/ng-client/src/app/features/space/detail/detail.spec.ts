@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Space } from './space';
+import { Detail } from './detail';
 
-describe('Space', () => {
-  let component: Space;
-  let fixture: ComponentFixture<Space>;
+describe('Detail', () => {
+  let component: Detail;
+  let fixture: ComponentFixture<Detail>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Space]
+      imports: [Detail]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Space);
+    fixture = TestBed.createComponent(Detail);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

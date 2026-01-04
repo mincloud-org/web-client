@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.HttpOverrides;
+using MinCloud.Internal.SDK;
 using Web.Server.Services;
 
 namespace Web.Server.Extensions;
@@ -18,23 +19,9 @@ public static class HostExtensions
             .AddDefaultOpenApi(builder.Configuration)
             .AddDefaultUserContexts();
 
-        builder.Services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
-        // .AddDeepinApiClient(options =>
-        // {
-        //     options.BaseUrl = builder.Configuration["DeepinApiUrl"] ?? throw new ArgumentNullException("DeepinApiUrl");
-        //     options.Timeout = TimeSpan.FromSeconds(30);
-        //     options.JsonSerializerOptions = new JsonSerializerOptions
-        //     {
-        //         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        //         PropertyNameCaseInsensitive = true,
-        //         Converters =
-        //         {
-        //             new System.Text.Json.Serialization.JsonStringEnumConverter()
-        //         },
-        //         DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
-        //         WriteIndented = true
-        //     };
-        // }).AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
+        builder.Services.AddMinCloudInternalApiClient(
+            baseUrl: builder.Configuration["InternalApiUrl"] ?? throw new ArgumentNullException("InternalApiUrl"),
+            useApiGateway: bool.Parse(builder.Configuration["UseApiGateway"] ?? "false"));
 
         builder.Services.AddReverseProxy()
             .AddTransforms<AccessTokenTransformProvider>()

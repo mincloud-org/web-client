@@ -19,4 +19,8 @@
     <Folder Include="Services/" />
     <Folder Include="wwwroot/" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../MinCloud.Internal.SDK/MinCloud.Internal.SDK.csproj" />
+  </ItemGroup>
 </Project>

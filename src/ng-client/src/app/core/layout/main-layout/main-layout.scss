@@ -22,3 +22,11 @@ mat-sidenav-content {
 .active-link {
   background-color: rgba(0, 0, 0, 0.05);
 }
+
+.nested-item {
+  padding-left: 32px !important;
+}
+
+.menu-item {
+  cursor: pointer;
+}
