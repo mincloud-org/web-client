@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.HttpOverrides;
 using MinCloud.Internal.SDK;
 using Web.Server.Services;
@@ -11,17 +10,27 @@ public static class HostExtensions
     public static WebApplicationBuilder AddApplicationService(this WebApplicationBuilder builder)
     {
         builder.Services
+            .AddDefaultServices()
             .AddDefaultControllers()
             .AddDefaultDataProtection(builder.Configuration.GetConnectionString("Redis"))
             .AddDefaultCorsPolicy()
             .AddDefaultHealthChecks()
+            .AddMultiTenantSupport()  // Add multi-tenant support
             .AddDefaultAuthentication(builder.Configuration)
             .AddDefaultOpenApi(builder.Configuration)
             .AddDefaultUserContexts();
 
+        var identitySection = builder.Configuration.GetSection("Identity");
+
         builder.Services.AddMinCloudInternalApiClient(
             baseUrl: builder.Configuration["InternalApiUrl"] ?? throw new ArgumentNullException("InternalApiUrl"),
-            useApiGateway: bool.Parse(builder.Configuration["UseApiGateway"] ?? "false"));
+            useApiGateway: bool.Parse(builder.Configuration["UseApiGateway"] ?? "false"),
+            identityOptions: new MinCloudIdentityOptions(
+                ClientId: identitySection.GetRequiredValue("ClientId"),
+                ClientSecret: identitySection.GetRequiredValue("ClientSecret"),
+                Authority: identitySection.GetRequiredValue("Url"),
+                Scopes: identitySection.GetRequiredSection("Scopes").GetChildren().Select(c => c.Key!).ToArray()
+                ));
 
         builder.Services.AddReverseProxy()
             .AddTransforms<AccessTokenTransformProvider>()

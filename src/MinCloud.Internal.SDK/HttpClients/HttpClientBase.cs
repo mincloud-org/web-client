@@ -11,12 +11,16 @@ public abstract class HttpClientBase
     protected readonly MinCloudApiOptions Options;
     protected readonly ILogger Logger;
     protected readonly JsonSerializerOptions JsonOptions;
+    protected readonly ITokenCredential TokenCredential;
     protected abstract string PathBase { get; }
-    protected HttpClientBase(HttpClient httpClient, IOptions<MinCloudApiOptions> options, ILogger logger)
+    protected abstract bool UseClientCredentialsToken { get; }
+
+    protected HttpClientBase(HttpClient httpClient, IOptions<MinCloudApiOptions> options, ILogger logger, ITokenCredential tokenCredential)
     {
         HttpClient = httpClient;
         Options = options.Value;
         Logger = logger;
+        TokenCredential = tokenCredential;
 
         JsonOptions = options.Value.JsonSerializerOptions ?? new JsonSerializerOptions
         {
@@ -27,7 +31,7 @@ public abstract class HttpClientBase
         };
     }
 
-    protected async Task<T?> GetAsync<T>(string endpoint, CancellationToken cancellationToken = default)
+    protected virtual async Task<T?> GetAsync<T>(string endpoint, CancellationToken cancellationToken = default)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
         var response = await SendAsync(request, cancellationToken);
@@ -79,6 +83,11 @@ public abstract class HttpClientBase
         {
             request.RequestUri = new Uri($"{PathBase}/{request.RequestUri}");
         }
+        if (UseClientCredentialsToken && request.Headers.Authorization == null)
+        {
+            var token = await TokenCredential.GetTokenAsync(cancellationToken);
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
         Logger.LogDebug("Sending {Method} request to {Endpoint}", request.Method, request.RequestUri);
         var response = await HttpClient.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
@@ -88,7 +97,7 @@ public abstract class HttpClientBase
     /// <summary>
     /// Handles the HTTP response and deserializes the content
     /// </summary>
-    private async Task<T?> HandleResponse<T>(HttpResponseMessage response)
+    protected async Task<T?> HandleResponse<T>(HttpResponseMessage response)
     {
         var content = await response.Content.ReadAsStringAsync();
 

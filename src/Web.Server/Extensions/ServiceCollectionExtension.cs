@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -6,6 +5,7 @@ using Microsoft.AspNetCore.DataProtection;
 using StackExchange.Redis;
 using Web.Server.Filters;
 using Web.Server.Helpers;
+using Web.Server.MultiTenant;
 using Web.Server.Services;
 
 namespace Web.Server.Extensions;
@@ -66,6 +66,8 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddDefaultAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var identitySection = configuration.GetSection("Identity");
+        var baseAuthority = identitySection["Url"] ?? throw new ArgumentNullException("Identity:Url");
+        
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -74,7 +76,17 @@ public static class ServiceCollectionExtension
         })
         .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
         {
-            options.Authority = identitySection["Url"];
+            // Use tenant-aware configuration manager
+            var serviceProvider = services.BuildServiceProvider();
+            var tenantResolver = serviceProvider.GetRequiredService<ITenantResolver>();
+            var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+            
+            options.ConfigurationManager = new TenantOpenIdConnectConfigurationManager(
+                tenantResolver,
+                httpClientFactory,
+                baseAuthority);
+            
+            options.Authority = baseAuthority;
             options.ClientId = identitySection["ClientId"];
             options.ClientSecret = identitySection["ClientSecret"];
             options.ResponseType = "code";
@@ -122,6 +134,26 @@ public static class ServiceCollectionExtension
             options.ExpireTimeSpan = TimeSpan.FromDays(7);
             options.SlidingExpiration = true;
         });
+        return services;
+    }
+    /// <summary>
+    /// Add multi-tenant support
+    /// </summary>
+    public static IServiceCollection AddMultiTenantSupport(this IServiceCollection services)
+    {
+        // Ensure HttpContextAccessor is registered (required for tenant resolution)
+        services.AddHttpContextAccessor();
+
+        // Register tenant resolver
+        services.AddSingleton<ITenantResolver, HostBasedTenantResolver>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddDefaultServices(this IServiceCollection services)
+    {
+        services.AddMemoryCache();
+        services.AddTransient<ITenantService, TenantService>();
         return services;
     }
 }

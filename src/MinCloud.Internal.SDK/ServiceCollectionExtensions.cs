@@ -14,7 +14,8 @@ public static class ServiceCollectionExtensions
         bool useApiGateway = false,
         TimeSpan? timeout = null,
         IDictionary<string, string>? defaultHeaders = null,
-        JsonSerializerOptions? jsonSerializerOptions = null)
+        JsonSerializerOptions? jsonSerializerOptions = null,
+        MinCloudIdentityOptions? identityOptions = null)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
 
@@ -35,6 +36,7 @@ public static class ServiceCollectionExtensions
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 WriteIndented = true
             };
+            options.IdentityOptions = identityOptions;
         });
     }
 
@@ -51,7 +53,7 @@ public static class ServiceCollectionExtensions
         // Configure options
         services.Configure(configure);
         services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
-        services.AddScoped<ITokenCredential, HttpTokenCredential>();
+        services.AddScoped<ITokenCredential, DefaultTokenCredential>();
 
         // Add HTTP client
         return services.AddHttpClient<IMinCloudClient, MinCloudClient>((serviceProvider, httpClient) =>

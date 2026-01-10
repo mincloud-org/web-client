@@ -8,7 +8,7 @@ public class HttpClientAuthorizationDelegatingHandler(ITokenCredential tokenCred
     {
         if (request.Headers.Authorization == null)
         {
-            var accessToken = await tokenCredential.GetTokenAsync(cancellationToken);
+            var accessToken = await tokenCredential.GetUserTokenAsync(cancellationToken);
             if (accessToken is not null)
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);

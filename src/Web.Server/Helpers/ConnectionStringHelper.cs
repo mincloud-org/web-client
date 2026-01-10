@@ -1,5 +1,3 @@
-using System;
-
 namespace Web.Server.Helpers;
 
 public class ConnectionStringHelper

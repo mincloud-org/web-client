@@ -1,4 +1,3 @@
-using System;
 using System.Text.Json;
 
 namespace MinCloud.Internal.SDK;
@@ -29,4 +28,7 @@ public class MinCloudApiOptions
     /// Whether to use API Gateway
     /// </summary>
     public bool UseApiGateway { get; set; }
+
+    public MinCloudIdentityOptions? IdentityOptions { get; set; }
 }
+public record MinCloudIdentityOptions(string ClientId, string ClientSecret, string Authority, string[] Scopes);

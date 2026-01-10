@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MinCloud.Internal.SDK;
 
@@ -17,7 +16,7 @@ namespace Web.Server.Controllers
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var spaces = await minCloudClient.Space.GetAllAsync(cancellationToken);
-            return Ok(spaces ?? []);
+            return Ok(spaces);
         }
 
     }
