@@ -2,7 +2,6 @@ import { Route } from "@angular/router";
 import { Space } from "./space";
 import { SpaceList } from "./list/list";
 import { SpaceDetail } from "./detail/detail";
-import { SpaceEditor } from "./editor/editor";
 
 export default [
     {
@@ -16,14 +15,6 @@ export default [
             {
                 path: 'detail/:id',
                 component: SpaceDetail
-            },
-            {
-                path: 'edit/:id',
-                component: SpaceEditor
-            },
-            {
-                path: 'create',
-                component: SpaceEditor
             },
             {
                 path: '',

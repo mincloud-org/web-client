@@ -1,0 +1,70 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Spaces</mat-card-title>
+        <div class="header-actions">
+            <a mat-icon-button color="primary" matTooltip="Add Storage" [routerLink]="['../','create']">
+                Add
+            </a>
+        </div>
+    </mat-card-header>
+
+    <mat-card-content>
+        @if (loading()) {
+        <div class="loading-container">
+            <mat-spinner></mat-spinner>
+        </div>
+        } @else if (storages().length === 0) {
+        <div class="empty-state">
+            <mat-icon>cloud_off</mat-icon>
+            <p>No storages found. Create your first storage to get started.</p>
+            <a mat-raised-button color="primary" [routerLink]="['../','create']">
+                Add Storage
+            </a>
+        </div>
+        } @else {
+        <table mat-table [dataSource]="storages()" class="mat-elevation-z2">
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let storage">{{ storage.name }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef>Type</th>
+                <td mat-cell *matCellDef="let storage">{{ storage.type }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let storage">{{ storage.status }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="quotaBytes">
+                <th mat-header-cell *matHeaderCellDef>QuotaBytes</th>
+                <td mat-cell *matCellDef="let storage">{{ storage.quotaBytes || '-' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdAt">
+                <th mat-header-cell *matHeaderCellDef>Created At</th>
+                <td mat-cell *matCellDef="let storage">{{ storage.createdAt | date: 'short' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="updatedAt">
+                <th mat-header-cell *matHeaderCellDef>Updated At</th>
+                <td mat-cell *matCellDef="let storage">{{ storage.updatedAt | date: 'short' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let storage">
+                    <a mat-icon-button color="primary" matTooltip="Edit" [routerLink]="['/storage/edit', storage.id]">
+                        <mat-icon>edit</mat-icon>
+                    </a>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        }
+    </mat-card-content>
+</mat-card>

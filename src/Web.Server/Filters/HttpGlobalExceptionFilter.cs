@@ -10,7 +10,6 @@ namespace Web.Server.Filters;
 
 public class HttpGlobalExceptionFilter(ILogger<HttpGlobalExceptionFilter> logger, IWebHostEnvironment env) : IExceptionFilter
 {
-    private readonly ILogger<HttpGlobalExceptionFilter> _logger = logger;
     public void OnException(ExceptionContext context)
     {
         logger.LogError(new EventId(context.Exception.HResult), context.Exception, context.Exception.Message);
@@ -40,7 +39,12 @@ public class HttpGlobalExceptionFilter(ILogger<HttpGlobalExceptionFilter> logger
             };
             if (env.IsDevelopment())
             {
-                json.Add("Exception", JsonNode.Parse(System.Text.Json.JsonSerializer.Serialize(context.Exception)));
+                json.Add("Exception", new JsonObject
+                {
+                    ["Type"] = context.Exception.GetType().FullName,
+                    ["Message"] = context.Exception.Message,
+                    ["StackTrace"] = context.Exception.StackTrace
+                });
             }
             context.Result = new InternalServerErrorObjectResult(json);
             context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

@@ -27,7 +27,11 @@ public abstract class HttpClientBase
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             PropertyNameCaseInsensitive = true,
             DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
-            WriteIndented = true
+            DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+            Converters =
+            {
+                new System.Text.Json.Serialization.JsonStringEnumConverter()
+            }
         };
     }
 

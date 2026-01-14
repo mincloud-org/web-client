@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>
+  <mat-icon>{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+  {{ isEditMode ? 'Edit Space' : 'Create New Space' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="spaceForm" class="space-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" placeholder="Enter space name" required />
+      <mat-icon matPrefix>badge</mat-icon>
+      @if (spaceForm.get('name')?.hasError('required') && spaceForm.get('name')?.touched) {
+      <mat-error>Name is required</mat-error>
+      }
+      @if (spaceForm.get('name')?.hasError('maxlength')) {
+      <mat-error>Name is too long (max 100 characters)</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" placeholder="Enter space description" rows="4"></textarea>
+      <mat-icon matPrefix>description</mat-icon>
+      @if (spaceForm.get('description')?.hasError('maxlength')) {
+      <mat-error>Description is too long (max 500 characters)</mat-error>
+      }
+    </mat-form-field>
+    @if(!spaceId){
+      <app-storage-selector formControlName="storageId" />
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="onCancel()" [disabled]="loading()">
+    Cancel
+  </button>
+  <button mat-raised-button color="primary" type="button" (click)="onSubmit()"
+    [disabled]="loading() || spaceForm.invalid">
+    @if (loading()) {
+    <mat-spinner diameter="20"></mat-spinner>
+    } @else {
+    <mat-icon>save</mat-icon>
+    }
+    {{ isEditMode ? 'Update' : 'Create' }}
+  </button>
+</mat-dialog-actions>

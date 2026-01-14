@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SpaceList } from './list';
+import { SpaceEditor } from './space-editor';
 
-describe('SpaceList', () => {
-  let component: SpaceList;
-  let fixture: ComponentFixture<SpaceList>;
+describe('SpaceEditor', () => {
+  let component: SpaceEditor;
+  let fixture: ComponentFixture<SpaceEditor>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SpaceList]
+      imports: [SpaceEditor]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SpaceList);
+    fixture = TestBed.createComponent(SpaceEditor);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {

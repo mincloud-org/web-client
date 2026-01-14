@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SpaceList } from './list';
+import { StorageSelector } from './storage-selector';
 
-describe('SpaceList', () => {
-  let component: SpaceList;
-  let fixture: ComponentFixture<SpaceList>;
+describe('StorageSelector', () => {
+  let component: StorageSelector;
+  let fixture: ComponentFixture<StorageSelector>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SpaceList]
+      imports: [StorageSelector]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SpaceList);
+    fixture = TestBed.createComponent(StorageSelector);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

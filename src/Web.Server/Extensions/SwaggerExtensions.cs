@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Web.Server.Services;
 
 namespace Web.Server.Extensions;
 
@@ -36,6 +37,7 @@ public static class SwaggerExtensions
 
         return app;
     }
+
     public static IServiceCollection AddDefaultOpenApi(this IServiceCollection services, IConfiguration configuration)
     {
         var openApi = configuration.GetSection("OpenApi");

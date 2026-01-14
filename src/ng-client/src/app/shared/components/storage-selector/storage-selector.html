@@ -1,0 +1,50 @@
+<mat-form-field class="storage-selector" appearance="outline">
+	<mat-label>{{ label }}</mat-label>
+
+	<input
+		matInput
+		type="text"
+		[placeholder]="placeholder"
+		[formControl]="searchControl"
+		[matAutocomplete]="auto"
+		(blur)="markTouched()"
+	/>
+
+	@if (allowClear && !disabled() && (selectedItem() || searchControl.value)) {
+		<button
+			mat-icon-button
+			matSuffix
+			type="button"
+			aria-label="Clear selection"
+			(click)="clearSelection()"
+		>
+			<mat-icon>close</mat-icon>
+		</button>
+	}
+
+	@if (loading()) {
+		<span matSuffix class="suffix-spinner">
+			<mat-progress-spinner diameter="18" mode="indeterminate"></mat-progress-spinner>
+		</span>
+	}
+
+	<mat-autocomplete
+		#auto="matAutocomplete"
+		[displayWith]="displayWith"
+		(optionSelected)="onOptionSelected($event.option.value)"
+	>
+		@for (item of items(); track item.value) {
+			<mat-option [value]="item" [disabled]="item.disabled">{{ item.text }}</mat-option>
+		}
+
+		@if (!loading() && items().length === 0) {
+			<mat-option disabled>
+				<span class="empty">No storages</span>
+			</mat-option>
+		}
+	</mat-autocomplete>
+
+	@if (required && ngControl?.invalid && (ngControl?.touched || ngControl?.dirty)) {
+		<mat-error>This field is required</mat-error>
+	}
+</mat-form-field>

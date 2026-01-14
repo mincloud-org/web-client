@@ -1,7 +1,7 @@
 import { Route } from "@angular/router";
 import { Settings } from "./settings"; 
-import { Users } from "../users/users";
-import { Storages } from "../storages/storages";
+import { User } from "../user/user";
+import { Storage } from "../storage/storage";
 
 export default [
     {
@@ -13,16 +13,16 @@ export default [
                 loadChildren: () => import('../space/space.routes')
             },
             {
-                path: 'users',
-                component: Users
+                path: 'user',
+                component: User
             },
             {
-                path: 'storages',
-                component: Storages
+                path: 'storage',
+                loadChildren: () => import('../storage/storage.routes')
             },
             {
                 path: '',
-                redirectTo: 'users',
+                redirectTo: 'user',
                 pathMatch: 'full'
             }
         ]

@@ -9,16 +9,21 @@ public static class HostExtensions
 
     public static WebApplicationBuilder AddApplicationService(this WebApplicationBuilder builder)
     {
+        var multiTenancyEnabled = builder.Configuration.GetValue<bool>("EnableMultiTenancy");
+
         builder.Services
             .AddDefaultServices()
             .AddDefaultControllers()
             .AddDefaultDataProtection(builder.Configuration.GetConnectionString("Redis"))
             .AddDefaultCorsPolicy()
             .AddDefaultHealthChecks()
-            .AddMultiTenantSupport()  // Add multi-tenant support
             .AddDefaultAuthentication(builder.Configuration)
             .AddDefaultOpenApi(builder.Configuration)
             .AddDefaultUserContexts();
+        if (multiTenancyEnabled)
+        {
+            builder.Services.AddMultiTenantSupport();  // Add multi-tenant support(builder.Configuration);
+        }
 
         var identitySection = builder.Configuration.GetSection("Identity");
 
