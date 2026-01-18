@@ -92,8 +92,7 @@ export class SpaceEditor implements OnInit {
       const request: CreateSpaceRequest = {
         name: formValue.name,
         description: formValue.description || undefined,
-        storageId: formValue.storageId,
-        storagePath: `/`
+        storageId: formValue.storageId
       };
 
       this.spaceService.create(request).subscribe({

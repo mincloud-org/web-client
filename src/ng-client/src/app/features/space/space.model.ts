@@ -6,14 +6,13 @@ export interface SpaceDto {
     createdAt: Date;
     updatedAt: Date;
     storageId: string;
-    storagePath: string;
+    storageContainer: string;
 }
 
 export interface CreateSpaceRequest {
     name: string;
     description?: string;
     storageId: string;
-    storagePath: string;
 }
 
 export interface UpdateSpaceRequest {

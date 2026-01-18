@@ -1,14 +1,4 @@
-export enum UserStorageType {
-    FileSystem,
-    Smb,
-    Dropbox,
-    GoogleDrive,
-    GooglePhotos,
-    GoogleCloudStorage,
-    OneDrive,
-    AwsS3,
-    AzureBlob
-}
+export type UserStorageType = 'awsS3' | 'azureBlob';
 
 export interface CreateStorageRequest {
     type: UserStorageType;

@@ -1,1 +1,164 @@
-<p>editor works!</p>
+<div class="storage-editor-container">
+  <mat-card class="editor-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+        <span>{{ isEditMode ? 'Edit Storage' : 'Create New Storage' }}</span>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (loading() && isEditMode) {
+        <div class="loading-spinner">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Loading storage data...</p>
+        </div>
+      } @else if (form) {
+        <form [formGroup]="form" class="storage-form">
+          <!-- Name Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" placeholder="Enter storage name" required />
+            <mat-icon matPrefix>badge</mat-icon>
+            @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
+              <mat-error>Name is required</mat-error>
+            }
+            @if (form.get('name')?.hasError('maxlength')) {
+              <mat-error>Name is too long (max 100 characters)</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Description Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" placeholder="Enter storage description" rows="3"></textarea>
+            <mat-icon matPrefix>description</mat-icon>
+            @if (form.get('description')?.hasError('maxlength')) {
+              <mat-error>Description is too long (max 500 characters)</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Storage Type Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Storage Type</mat-label>
+            <mat-select formControlName="type" required>
+              <mat-option value="awsS3">
+                <mat-icon>cloud</mat-icon>
+                AWS S3
+              </mat-option>
+              <mat-option value="azureBlob">
+                <mat-icon>cloud</mat-icon>
+                Azure Blob Storage
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>storage</mat-icon>
+            @if (form.get('type')?.hasError('required') && form.get('type')?.touched) {
+              <mat-error>Storage type is required</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- AWS S3 Credentials -->
+          @if (selectedType === 'awsS3') {
+            <div class="credentials-section" formGroupName="credentialsJson">
+              <h3 class="section-title">
+                <mat-icon>vpn_key</mat-icon>
+                AWS S3 Credentials
+              </h3>
+
+              @if (isEditMode) {
+                <div class="info-message">
+                  <mat-icon>info</mat-icon>
+                  <span>Credentials are optional when editing. Leave blank to keep existing credentials, or fill in to update them.</span>
+                </div>
+              }
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Access Key ID</mat-label>
+                <input matInput formControlName="accessKeyId" [placeholder]="isEditMode ? '(unchanged if left blank)' : 'Enter AWS access key ID'" [required]="!isEditMode" />
+                <mat-icon matPrefix>key</mat-icon>
+                @if (form.get('credentialsJson.accessKeyId')?.hasError('required') && form.get('credentialsJson.accessKeyId')?.touched) {
+                  <mat-error>Access Key ID is required</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Secret Access Key</mat-label>
+                <input matInput type="password" formControlName="secretAccessKey" [placeholder]="isEditMode ? '(unchanged if left blank)' : 'Enter AWS secret access key'" [required]="!isEditMode" />
+                <mat-icon matPrefix>lock</mat-icon>
+                @if (form.get('credentialsJson.secretAccessKey')?.hasError('required') && form.get('credentialsJson.secretAccessKey')?.touched) {
+                  <mat-error>Secret Access Key is required</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Region</mat-label>
+                <input matInput formControlName="region" [placeholder]="isEditMode ? '(unchanged if left blank)' : 'e.g., us-east-1'" [required]="!isEditMode" />
+                <mat-icon matPrefix>public</mat-icon>
+                @if (form.get('credentialsJson.region')?.hasError('required') && form.get('credentialsJson.region')?.touched) {
+                  <mat-error>Region is required</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Bucket Name</mat-label>
+                <input matInput formControlName="bucketName" [placeholder]="isEditMode ? '(unchanged if left blank)' : 'Enter S3 bucket name'" [required]="!isEditMode" />
+                <mat-icon matPrefix>folder</mat-icon>
+                @if (form.get('credentialsJson.bucketName')?.hasError('required') && form.get('credentialsJson.bucketName')?.touched) {
+                  <mat-error>Bucket Name is required</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Endpoint (Optional)</mat-label>
+                <input matInput formControlName="endpoint" placeholder="Custom S3 endpoint (optional)" />
+                <mat-icon matPrefix>link</mat-icon>
+              </mat-form-field>
+            </div>
+          }
+
+          <!-- Azure Blob Credentials -->
+          @if (selectedType === 'azureBlob') {
+            <div class="credentials-section" formGroupName="credentialsJson">
+              <h3 class="section-title">
+                <mat-icon>vpn_key</mat-icon>
+                Azure Blob Storage Credentials
+              </h3>
+
+              @if (isEditMode) {
+                <div class="info-message">
+                  <mat-icon>info</mat-icon>
+                  <span>Credentials are optional when editing. Leave blank to keep existing credentials, or fill in to update them.</span>
+                </div>
+              }
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Connection String</mat-label>
+                <textarea matInput formControlName="connectionString" [placeholder]="isEditMode ? '(unchanged if left blank)' : 'Enter Azure Blob connection string'" rows="4" [required]="!isEditMode"></textarea>
+                <mat-icon matPrefix>link</mat-icon>
+                @if (form.get('credentialsJson.connectionString')?.hasError('required') && form.get('credentialsJson.connectionString')?.touched) {
+                  <mat-error>Connection String is required</mat-error>
+                }
+              </mat-form-field>
+            </div>
+          }
+        </form>
+      }
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-button type="button" (click)="onCancel()" [disabled]="loading()">
+        <mat-icon>cancel</mat-icon>
+        Cancel
+      </button>
+      <button mat-raised-button color="primary" type="button" (click)="onSubmit()"
+        [disabled]="loading() || form?.invalid">
+        @if (loading()) {
+          <mat-spinner diameter="20"></mat-spinner>
+        } @else {
+          <mat-icon>save</mat-icon>
+        }
+        {{ isEditMode ? 'Update' : 'Create' }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

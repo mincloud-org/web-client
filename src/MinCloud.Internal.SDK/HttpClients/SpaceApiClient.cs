@@ -3,8 +3,8 @@ using Microsoft.Extensions.Options;
 
 namespace MinCloud.Internal.SDK.HttpClients;
 
-public record SpaceDto(Guid Id, string Name, string? Description, Guid CreatedBy, DateTimeOffset CreatedAt, DateTimeOffset UpdatedAt, Guid StorageId, string StoragePath);
-public record CreateSpaceRequest(string Name, string? Description, Guid StorageId, string StoragePath);
+public record SpaceDto(Guid Id, string Name, string? Description, Guid CreatedBy, DateTimeOffset CreatedAt, DateTimeOffset UpdatedAt, Guid StorageId, string StorageContainer);
+public record CreateSpaceRequest(string Name, string? Description, Guid StorageId);
 public record UpdateSpaceRequest(string Name, string? Description);
 
 public interface ISpaceApiClient

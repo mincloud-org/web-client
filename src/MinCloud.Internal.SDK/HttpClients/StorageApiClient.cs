@@ -6,26 +6,12 @@ namespace MinCloud.Internal.SDK.HttpClients;
 
 public enum UserStorageType
 {
-    FileSystem,
-    Smb,
-    Dropbox,
-    GoogleDrive,
-    GooglePhotos,
-    GoogleCloudStorage,
-    OneDrive,
     AwsS3,
     AzureBlob
 }
 public enum StorageType
 {
     BuiltIn,
-    FileSystem,
-    Smb,
-    Dropbox,
-    GoogleDrive,
-    GooglePhotos,
-    GoogleCloudStorage,
-    OneDrive,
     AwsS3,
     AzureBlob
 }

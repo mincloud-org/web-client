@@ -1,6 +1,6 @@
 <mat-card>
     <mat-card-header>
-        <mat-card-title>Spaces</mat-card-title>
+        <mat-card-title>Storages</mat-card-title>
         <div class="header-actions">
             <a mat-icon-button color="primary" matTooltip="Add Storage" [routerLink]="['../','create']">
                 Add
@@ -56,7 +56,7 @@
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let storage">
-                    <a mat-icon-button color="primary" matTooltip="Edit" [routerLink]="['/storage/edit', storage.id]">
+                    <a mat-icon-button color="primary" matTooltip="Edit" [routerLink]="['..','edit', storage.id]">
                         <mat-icon>edit</mat-icon>
                     </a>
                 </td>
